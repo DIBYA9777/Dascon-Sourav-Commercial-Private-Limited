@@ -1,0 +1,8 @@
+{
+  "name": "DASCON SOURAV Commercial Pvt Ltd ERP",
+  "description": "Enterprise Resource Planning system for Dascon Sourav Commercial Private Limited - Engineers and Contractors.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
