@@ -44,12 +44,13 @@ export const authService = {
   },
 
   /**
-   * Resets the user's password using the received OTP code
+   * Resets the user's password using the received token/code
    */
-  async resetPasswordWithOtp(email: string, otp: string, newPassword: string): Promise<any> {
+  async resetPasswordWithOtp(email: string, token: string, newPassword: string): Promise<any> {
     const response = await apiClient.post('/auth/reset-password', {
       email,
-      otp,
+      token,
+      resetToken: token,
       newPassword,
     });
     return response.data;
