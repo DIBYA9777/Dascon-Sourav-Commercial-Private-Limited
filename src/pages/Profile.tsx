@@ -1,11 +1,47 @@
 import React from 'react';
 import { useAuth } from '@/src/context/AuthContext.tsx';
-import { User, Shield, Contact, Building, MapPin, Phone, Mail, Calendar, Droplet, CreditCard } from 'lucide-react';
+import { User, Shield, Contact, Building, MapPin, Phone, Mail, Calendar, Droplet, CreditCard, Lock } from 'lucide-react';
+import { Modal } from '@/src/components/Modal.tsx';
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  
+  // Reset Password State Definitions
+  const [isResetOpen, setIsResetOpen] = React.useState(false);
+  const [newPassword, setNewPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = React.useState<string | null>(null);
 
   if (!user) return null;
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setErrorMsg('Passwords do not match.');
+      return;
+    }
+    setLoading(true);
+    setErrorMsg(null);
+    setSuccessMsg(null);
+    try {
+      // Simulate API call for demonstration/testing on Frontend
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setSuccessMsg('Your security password has been updated successfully (Simulated).');
+      // Reset states
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => {
+        setIsResetOpen(false);
+        setSuccessMsg(null);
+      }, 2000);
+    } catch (err: any) {
+      setErrorMsg('Failed to update password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const sections = [
     {
@@ -22,7 +58,7 @@ export default function ProfilePage() {
       title: 'Personal Details',
       icon: <User className="w-4 h-4 text-emerald-600" />,
       fields: [
-        { label: 'Father\'s Name', value: user.fatherName || 'Rahul' }, // Mocking for demo if empty
+        { label: "Father's Name", value: user.fatherName || 'Rahul' }, // Mocking for demo if empty
         { label: 'Date of Birth', value: user.dob || '1990-01-01' },
         { label: 'Blood Group', value: user.bloodGroup || 'O+' },
         { label: 'Qualification', value: user.qualification || 'B.Tech' },
@@ -79,11 +115,14 @@ export default function ProfilePage() {
         </div>
         
         <div className="md:ml-auto flex gap-2 z-10">
-           <button className="bg-white/5 hover:bg-white/10 transition-all px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10">
+           <button className="bg-white/5 hover:bg-white/10 transition-all px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-white/10 cursor-pointer">
              Edit Profile
            </button>
-           <button className="bg-blue-600 hover:bg-blue-700 transition-all px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-900/50">
-             Privacy Key
+           <button 
+             onClick={() => setIsResetOpen(true)}
+             className="bg-blue-600 hover:bg-blue-700 transition-all px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-900/50 cursor-pointer"
+           >
+             Reset Password
            </button>
         </div>
       </div>
@@ -125,6 +164,88 @@ export default function ProfilePage() {
           NODE: IND-ORI-HQ-01
         </div>
       </div>
+
+      {/* RESET PASSWORD MODAL */}
+      <Modal
+        isOpen={isResetOpen}
+        onClose={() => {
+          setIsResetOpen(false);
+          setErrorMsg(null);
+          setSuccessMsg(null);
+        }}
+        title="Reset Security Password"
+      >
+        <form onSubmit={handleResetPassword} className="space-y-4 text-left">
+          {errorMsg && (
+            <div className="p-3 bg-rose-50 border-l-4 border-rose-500 rounded-xl">
+              <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest leading-relaxed">
+                {errorMsg}
+              </p>
+            </div>
+          )}
+
+          {successMsg && (
+            <div className="p-3 bg-emerald-50 border-l-4 border-emerald-500 rounded-xl">
+              <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-relaxed">
+                {successMsg}
+              </p>
+            </div>
+          )}
+
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label htmlFor="new-profile-pass" className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">New Password</label>
+              <div className="relative group">
+                <input
+                  id="new-profile-pass"
+                  type="password"
+                  required
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 outline-none focus:border-blue-500 transition-all font-bold text-slate-800 placeholder:text-slate-300 text-xs"
+                  placeholder="Enter new password"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label htmlFor="confirm-profile-pass" className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Confirm New Password</label>
+              <div className="relative group">
+                <input
+                  id="confirm-profile-pass"
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 px-4 outline-none focus:border-blue-500 transition-all font-bold text-slate-800 placeholder:text-slate-300 text-xs"
+                  placeholder="Confirm new password"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setIsResetOpen(false);
+                setErrorMsg(null);
+                setSuccessMsg(null);
+              }}
+              className="px-4 py-2 border border-slate-200 text-slate-500 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              {loading ? 'Updating...' : 'Update Password'}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }
