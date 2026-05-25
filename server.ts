@@ -34,6 +34,58 @@ async function startServer() {
     }
   });
 
+  // API Route - Proxy forgot password endpoint to Railway backend
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const response = await fetch("https://dascon-backend-production.up.railway.app/api/auth/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        data = { message: text };
+      }
+
+      res.status(response.status).json(data);
+    } catch (error: any) {
+      console.error("Express proxy forgot-password failed:", error);
+      res.status(500).json({ error: "Express Proxy Failure", message: error.message });
+    }
+  });
+
+  // API Route - Proxy reset password endpoint to Railway backend
+  app.post("/api/auth/reset-password", async (req, res) => {
+    try {
+      const response = await fetch("https://dascon-backend-production.up.railway.app/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        data = { message: text };
+      }
+
+      res.status(response.status).json(data);
+    } catch (error: any) {
+      console.error("Express proxy reset-password failed:", error);
+      res.status(500).json({ error: "Express Proxy Failure", message: error.message });
+    }
+  });
+
   // API Route - Proxy registration endpoint to Railway backend with Bearer Token matching
   app.post("/api/admin/register-user", async (req, res) => {
     try {

@@ -34,4 +34,24 @@ export const authService = {
     });
     return response.data;
   },
+
+  /**
+   * Sends an OTP to the user's registered email address
+   */
+  async sendForgotPasswordOtp(email: string): Promise<any> {
+    const response = await apiClient.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  /**
+   * Resets the user's password using the received OTP code
+   */
+  async resetPasswordWithOtp(email: string, otp: string, newPassword: string): Promise<any> {
+    const response = await apiClient.post('/auth/reset-password', {
+      email,
+      otp,
+      newPassword,
+    });
+    return response.data;
+  },
 };
