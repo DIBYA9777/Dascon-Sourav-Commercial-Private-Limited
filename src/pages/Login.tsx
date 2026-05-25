@@ -32,6 +32,7 @@ export default function LoginPage() {
   const [forgotEmail, setForgotEmail] = React.useState('');
   const [otp, setOtp] = React.useState('');
   const [newPassword, setNewPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
   const [actionLoading, setActionLoading] = React.useState(false);
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = React.useState<string | null>(null);
@@ -55,6 +56,10 @@ export default function LoginPage() {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setActionError('Security Tokens (Passwords) do not match.');
+      return;
+    }
     setActionLoading(true);
     setActionError(null);
     setActionSuccess(null);
@@ -67,6 +72,7 @@ export default function LoginPage() {
       setForgotEmail('');
       setOtp('');
       setNewPassword('');
+      setConfirmPassword('');
     } catch (err: any) {
       setActionError(err.message || 'Verification failure. Please review OTP code.');
     } finally {
@@ -253,6 +259,24 @@ export default function LoginPage() {
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="w-full bg-slate-50 border-2 border-slate-50 rounded-[1rem] sm:rounded-[1.2rem] py-3 sm:py-4 pl-14 pr-6 outline-none focus:border-blue-500 transition-all font-black text-slate-800 placeholder:text-slate-455 shadow-inner text-xs"
                     placeholder="Enter new password"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="confirm-password" className="block text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] ml-2">Confirm Security Token (Password)</label>
+                <div className="relative group">
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                       <Lock className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="confirm-password"
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full bg-slate-50 border-2 border-slate-50 rounded-[1rem] sm:rounded-[1.2rem] py-3 sm:py-4 pl-14 pr-6 outline-none focus:border-blue-500 transition-all font-black text-slate-800 placeholder:text-slate-455 shadow-inner text-xs"
+                    placeholder="Confirm new password"
                   />
                 </div>
               </div>
