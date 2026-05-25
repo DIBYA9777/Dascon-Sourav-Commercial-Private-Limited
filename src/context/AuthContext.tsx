@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '@/src/types.ts';
-import { AUTH_ENDPOINTS } from '@/src/constants/apiConfig.ts';
+import { authService } from '@/src/services/authService.ts';
 
 interface AuthContextType {
   user: User | null;
@@ -26,30 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const login = async (email: string, password: string, role: UserRole = UserRole.USER) => {
-    const response = await fetch(AUTH_ENDPOINTS.LOGIN, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
-
-    if (!response.ok) {
-      let errorMsg = 'Authentication Failed';
-      try {
-        const errData = await response.json();
-        errorMsg = errData.message || errData.error || errorMsg;
-      } catch (_) {}
-      throw new Error(errorMsg);
-    }
-
-    const backendData = await response.json();
-    if (!backendData || !backendData.token) {
-      throw new Error('Invalid backend login response structure');
-    }
+    const backendData = await authService.login(email, password);
 
     // Map backend response fields to the User interface
     const mappedRole = backendData.role as UserRole;
@@ -70,31 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const registerUser = async (userData: any) => {
-    const token = localStorage.getItem('nway_token');
-    const response = await fetch(AUTH_ENDPOINTS.REGISTER, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify({
-        ...userData,
-        modulePermissions: userData.modulePermissions || [],
-        sectionPermissions: userData.sectionPermissions || [],
-      }),
-    });
-
-    if (!response.ok) {
-      let errorMsg = 'Failed to register user';
-      try {
-        const errData = await response.json();
-        errorMsg = errData.message || errData.error || errorMsg;
-      } catch (_) {}
-      throw new Error(errorMsg);
-    }
-
-    const resData = await response.json();
-    return resData;
+    return authService.registerUser(userData);
   };
 
   const logout = () => {

@@ -1,32 +1,15 @@
 import { User, UserRole } from '@/src/types.ts';
 import { LoginRequest, SecureLoginResponse } from '../models/AuthTypes.ts';
-import { AUTH_ENDPOINTS } from '@/src/constants/apiConfig.ts';
+import apiClient from '@/src/services/apiClient.ts';
 
 export class AuthService {
   /**
    * Performs real API authentication request to remote server
    */
   public static async authenticateRemote(payload: LoginRequest): Promise<SecureLoginResponse> {
-    const response = await fetch(AUTH_ENDPOINTS.LOGIN, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      let errorMessage = 'Authentication protocol failed';
-      try {
-        const errorBody = await response.json();
-        errorMessage = errorBody.message || errorBody.error || errorMessage;
-      } catch (_) {
-        // Failed to parse, use default
-      }
-      throw new Error(errorMessage);
-    }
-
-    const data: SecureLoginResponse = await response.json();
+    const response = await apiClient.post<SecureLoginResponse>('/auth/login', payload);
+    const data = response.data;
+    
     if (!data || !data.token) {
       throw new Error('Malformed or empty token response structure from remote gateway');
     }

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { Sidebar } from '@/src/components/Sidebar.tsx';
 import { Menu, Bell, Search, Globe } from 'lucide-react';
 import { useAuth } from '@/src/context/AuthContext.tsx';
+import LoadingSpinner from '@/src/components/LoadingSpinner.tsx';
 
 export default function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -56,7 +57,9 @@ export default function MainLayout() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-6 scroll-smooth">
-          <Outlet />
+          <Suspense fallback={<LoadingSpinner />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

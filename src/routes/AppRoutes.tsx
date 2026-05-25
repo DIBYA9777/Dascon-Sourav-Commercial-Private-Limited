@@ -1,29 +1,33 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { lazy } from 'react';
 import MainLayout from '@/src/components/MainLayout.tsx';
 import Login from '@/src/pages/Login.tsx';
-import Dashboard from '@/src/pages/Dashboard.tsx';
 import { PrivateRoute, SuperAdminRoute, AdminRoute } from '@/src/guards/RoleGuard.tsx';
-import UserList from '@/src/modules/superadmin/user-management/UserList.tsx';
-import CreateUser from '@/src/modules/superadmin/user-management/CreateUser.tsx';
-import ModuleAccess from '@/src/modules/superadmin/access-control/ModuleAccess.tsx';
 import ModulePlaceholder from '@/src/components/ModulePlaceholder.tsx';
-import Profile from '@/src/pages/Profile.tsx';
-import ModuleDashboard from '@/src/pages/ModuleDashboard.tsx';
 
-// Project Management Module Custom Pages
-import { 
-  ProjectListPage, 
-  WBSPage, 
-  BOQPage, 
-  PlanningPage, 
-  ExecutionTypePage, 
-  WorkOrderListPage,
-  DPRListPage,
-  PlannedVsAchievedPage,
-  SCBillListPage,
-  RABillListPage,
-  ACPostingListPage
-} from '@/src/modules/06_project';
+const Dashboard = lazy(() => import('@/src/pages/Dashboard.tsx'));
+const Profile = lazy(() => import('@/src/pages/Profile.tsx'));
+
+// SUPER ADMIN ONLY
+const UserList = lazy(() => import('@/src/modules/superadmin/user-management/UserList.tsx'));
+const CreateUser = lazy(() => import('@/src/modules/superadmin/user-management/CreateUser.tsx'));
+const ModuleAccess = lazy(() => import('@/src/modules/superadmin/access-control/ModuleAccess.tsx'));
+
+// CUSTOM PROJECT MANAGEMENT ROUTES
+const ProjectListPage = lazy(() => import('@/src/modules/06_project/pages/ProjectListPage.tsx'));
+const WBSPage = lazy(() => import('@/src/modules/06_project/pages/WBSPage.tsx'));
+const BOQPage = lazy(() => import('@/src/modules/06_project/pages/BOQPage.tsx'));
+const PlanningPage = lazy(() => import('@/src/modules/06_project/pages/PlanningPage.tsx'));
+const ExecutionTypePage = lazy(() => import('@/src/modules/06_project/pages/ExecutionTypePage.tsx'));
+const WorkOrderListPage = lazy(() => import('@/src/modules/06_project/pages/WorkOrderListPage.tsx'));
+const DPRListPage = lazy(() => import('@/src/modules/06_project/pages/DPRListPage.tsx'));
+const PlannedVsAchievedPage = lazy(() => import('@/src/modules/06_project/pages/PlannedVsAchievedPage.tsx'));
+const SCBillListPage = lazy(() => import('@/src/modules/06_project/pages/SCBillListPage.tsx'));
+const RABillListPage = lazy(() => import('@/src/modules/06_project/pages/RABillListPage.tsx'));
+const ACPostingListPage = lazy(() => import('@/src/modules/06_project/pages/ACPostingListPage.tsx'));
+
+// DYNAMIC ERP MODULES
+const ModuleDashboard = lazy(() => import('@/src/pages/ModuleDashboard.tsx'));
 
 export default function AppRoutes() {
   return (
