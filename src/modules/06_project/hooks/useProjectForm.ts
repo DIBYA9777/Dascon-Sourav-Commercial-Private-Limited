@@ -16,7 +16,6 @@ export function useProjectForm({ project, onSuccess }: UseProjectFormProps) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [status, setStatus] = useState<Project['status']>('Planning');
-  const [description, setDescription] = useState('');
   const [errorStatus, setErrorStatus] = useState('');
 
   useEffect(() => {
@@ -29,7 +28,6 @@ export function useProjectForm({ project, onSuccess }: UseProjectFormProps) {
       setStartDate(project.startDate);
       setEndDate(project.endDate);
       setStatus(project.status);
-      setDescription(project.description || '');
     } else {
       setName('');
       setClient('');
@@ -39,7 +37,6 @@ export function useProjectForm({ project, onSuccess }: UseProjectFormProps) {
       setStartDate('');
       setEndDate('');
       setStatus('Planning');
-      setDescription('');
     }
     setErrorStatus('');
   }, [project]);
@@ -68,8 +65,7 @@ export function useProjectForm({ project, onSuccess }: UseProjectFormProps) {
           siteMapping: finalSiteMapping,
           startDate,
           endDate,
-          status,
-          description: description.trim()
+          status
         });
       } else {
         await projectService.addProject({
@@ -80,8 +76,7 @@ export function useProjectForm({ project, onSuccess }: UseProjectFormProps) {
           siteMapping: finalSiteMapping,
           startDate,
           endDate,
-          status,
-          description: description.trim()
+          status
         });
       }
       onSuccess();
@@ -107,8 +102,6 @@ export function useProjectForm({ project, onSuccess }: UseProjectFormProps) {
     setEndDate,
     status,
     setStatus,
-    description,
-    setDescription,
     errorStatus,
     setErrorStatus,
     handleSubmit

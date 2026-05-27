@@ -25,8 +25,6 @@ export default function ProjectForm({ project, onSuccess, onCancel }: ProjectFor
     setEndDate,
     status,
     setStatus,
-    description,
-    setDescription,
     errorStatus,
     handleSubmit
   } = useProjectForm({ 
@@ -144,19 +142,6 @@ export default function ProjectForm({ project, onSuccess, onCancel }: ProjectFor
           <option value="Completed">Completed</option>
           <option value="Archived">Archived</option>
         </select>
-      </div>
-
-      <div className="space-y-1 text-left">
-        <label className="block text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
-          Description / Project Scope
-        </label>
-        <textarea 
-          rows={3}
-          placeholder="Briefly state key scope matrices, layers, chainage configurations, or technical definitions..."
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          className="w-full bg-slate-50 border-2 border-slate-50 rounded-xl p-3 outline-none focus:border-blue-500 font-bold text-slate-800 placeholder:text-slate-300 text-xs resize-none text-left"
-        />
       </div>
 
       <div className="flex gap-3 pt-2">
