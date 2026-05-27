@@ -15,8 +15,10 @@ export default function ProjectForm({ project, onSuccess, onCancel }: ProjectFor
     setName,
     client,
     setClient,
-    siteId,
-    setSiteId,
+    clientContact,
+    setClientContact,
+    siteMapping,
+    setSiteMapping,
     startDate,
     setStartDate,
     endDate,
@@ -71,22 +73,33 @@ export default function ProjectForm({ project, onSuccess, onCancel }: ProjectFor
           />
         </div>
 
-        <div className="space-y-1 text-left">
+        <div className="space-y-1">
           <label className="block text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
-            Linked Site Location *
+            Client Contact *
           </label>
-          <select 
-            value={siteId}
-            onChange={e => setSiteId(e.target.value)}
+          <input 
+            type="text"
             required
-            className="w-full bg-slate-50 border-2 border-slate-50 rounded-xl py-2 px-4 outline-none text-xs font-bold text-slate-800 cursor-pointer"
-          >
-            <option value="">Select Location *</option>
-            {KNOWN_SITES.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
-            ))}
-          </select>
+            placeholder="e.g. 9876543210"
+            value={clientContact}
+            onChange={e => setClientContact(e.target.value)}
+            className="w-full bg-slate-50 border-2 border-slate-50 rounded-xl py-2 px-4 outline-none focus:border-blue-500 font-bold text-slate-800 placeholder:text-slate-300 text-xs"
+          />
         </div>
+      </div>
+
+      <div className="space-y-1 text-left">
+        <label className="block text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">
+          Site Mapping / Location *
+        </label>
+        <input 
+          type="text"
+          required
+          placeholder="e.g. Site A, Block 4"
+          value={siteMapping}
+          onChange={e => setSiteMapping(e.target.value)}
+          className="w-full bg-slate-50 border-2 border-slate-50 rounded-xl py-2 px-4 outline-none focus:border-blue-500 font-bold text-slate-800 placeholder:text-slate-300 text-xs"
+        />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">

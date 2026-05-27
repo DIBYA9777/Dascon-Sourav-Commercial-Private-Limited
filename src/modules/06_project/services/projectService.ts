@@ -8,6 +8,7 @@ import {
   ExecutionTypeConfig, 
   WorkOrder 
 } from '../types';
+import apiClient from '@/src/services/apiClient.ts';
 
 // Hardcoded sites for dropdowns/linking
 export const KNOWN_SITES = [
@@ -724,16 +725,46 @@ export const projectService = {
   getProjects: () => load<Project[]>('erp_projects', defaultProjects),
   saveProjects: (projects: Project[]) => save('erp_projects', projects),
   getProjectById: (id: string) => projectService.getProjects().find(p => p.id === id),
-  addProject: (p: Omit<Project, 'id' | 'code' | 'createdAt'>) => {
-    const list = projectService.getProjects();
-    const cleanName = p.name.trim().toUpperCase().replace(/\s+/g, '_');
-    const autoCode = `PRJ-${String(list.length + 1).padStart(3, '0')}`;
-    const newProj: Project = {
-      ...p,
-      id: `prj-${Date.now()}`,
-      code: autoCode,
-      createdAt: new Date().toISOString()
+  addProject: async (p: Omit<Project, 'id' | 'code' | 'createdAt'>) => {
+    let backendStatus = 'PLANNED';
+    if (p.status === 'Active') backendStatus = 'ACTIVE';
+    else if (p.status === 'Completed') backendStatus = 'COMPLETED';
+    else if (p.status === 'Archived') backendStatus = 'ARCHIVED';
+
+    const payload = {
+      projectName: p.name,
+      clientName: p.client,
+      clientContact: p.clientContact || '',
+      siteMapping: p.siteMapping || p.siteId || '',
+      startDate: p.startDate,
+      endDate: p.endDate,
+      status: backendStatus
     };
+
+    const response = await apiClient.post('/projects', payload);
+    const data = response.data;
+
+    let localStatus: Project['status'] = 'Planning';
+    if (data.status === 'ACTIVE') localStatus = 'Active';
+    else if (data.status === 'COMPLETED') localStatus = 'Completed';
+    else if (data.status === 'ARCHIVED') localStatus = 'Archived';
+
+    const newProj: Project = {
+      id: String(data.id),
+      code: data.projectCode || `PRJ-${String(data.id).padStart(3, '0')}`,
+      name: data.projectName,
+      client: data.clientName,
+      clientContact: data.clientContact || '',
+      siteId: data.siteMapping || '',
+      siteMapping: data.siteMapping || '',
+      startDate: data.startDate,
+      endDate: data.endDate,
+      status: localStatus,
+      description: p.description || '',
+      createdAt: data.createdAt || new Date().toISOString()
+    };
+
+    const list = projectService.getProjects();
     list.push(newProj);
     projectService.saveProjects(list);
     return newProj;

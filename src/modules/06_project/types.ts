@@ -9,6 +9,8 @@ export interface Project {
   status: 'Active' | 'Planning' | 'Completed' | 'Archived';
   description?: string;
   createdAt: string;
+  clientContact?: string;
+  siteMapping?: string;
 }
 
 export interface WBSLayer {
